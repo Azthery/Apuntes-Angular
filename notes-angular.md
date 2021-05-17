@@ -331,13 +331,14 @@ Los comandos son:
 ______________________________________________________________________
 
 ## **Pipe**:
-  Los **pipe** son metodos que trasnforman los datos
+  Los **pipe** son metodos que trasnforman datos dentro de un {{ **template-expression** }}
   syntax:
 ```html
-  <p>{{ "var" | pipe }}</p>
+  <p>{{ "date" | pipe }}</p>
 ```
-> - **var**: es una variable de un tipo de archivo desplegable en html.
-> - **pipe**: es el pipe.
+> - **date**: El dato a desplegar en html.
+> - **pipe**: es nuestro pipe.
+
 
 Ejemplos:  
 > El "string" se trasnformara a mayusculas
@@ -363,4 +364,60 @@ Ejemplos:
 >[Documentation](https://angular.io/api/common/DatePipe#pre-defined-format-options)
 >```html
 ><p>{{ today | date:'short' }}</p> //<--- agregamos el 'short'
+>```
+
+## Creando un **Pipe**:
+
+>Podemos generar nuestro propio pipe con un **generator** de angular, con el siguiente comando en consola:
+>```
+>  ng g p pipes/nombreDelPipe/nombreDelPipe
+>```
+> - **g**: generator.
+> - **p**: pipe.
+> - **pipes/nombreDelPipe/nombreDelPipe**: directorio de donde generaremos el pipe, recomendado usar este metodo por buena practica, podemos reemplar "nombreDelPipe" en el directorio para personalizar el nombre.
+>
+>Esto nos generara dos archivo: `./src/app/pipes/nombreDelPipe/nombreDelPipe.pipe.ts` y `./src/app/pipes/nombreDelPipe/nombreDelPipe.pipe.spec.ts`.
+
+>  Para nuestro ejemplo usaremos el siguiente comando en consola `ng g p exponential`, del cual usaremos el archivo `./src/app/pipes/exponential/exponential.pipe.ts`, su codigo es:
+>  ```ts
+>  import { Pipe, PipeTransform } from '@angular/core';
+>
+>  @Pipe({                                   //<--- El tipo de "decorator" que se usa en "pipes"
+>    name: 'exponential'                     //<--- Nombre de nuestro "pipe"
+>  })
+>  export class ExponentialPipe implements PipeTransform {
+>
+>    transform(                              //<--- Metodo "transform" que nos permite transformar los datos
+>      value: unknown,                       //<--- Valores de entrada
+>      ...args: unknown[]                    //<--- Argumentos (opcional)
+>      ): unknown 
+>      {  
+>        return null;                        //<--- Valor de salida
+>      }
+>
+>  }
+>  ```
+>
+>Modificaremos este documento tal que asi:
+>  ```ts
+>import { Pipe, PipeTransform } from '@angular/core';
+>
+>@Pipe({
+>  name: 'exponential'
+>})
+>export class ExponentialPipe implements PipeTransform {
+>  transform(value: number): any {
+>    return Math.pow(value, 2);
+>}}
+>```
+>
+>Y listo!, ahora podemos hacer uso de nuestro **pipe**, como el siguiente ejemplo:
+>
+>```html
+><input type="text" style="width: 25px;" [(ngModel)]="numberExpontial"> ^2 =
+>  {{ numberExpontial | exponential}}
+>```
+>y no olvidemos agregar nuestra variable _numberExpontial_ en el archivo _app.component.ts_:
+>```ts
+>numberExpontial: number = 10;
 >```
